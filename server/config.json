@@ -1,4 +1,3 @@
 {
-    "DB_ADDRESS": "127.0.0.1:27017",
     "TALLY_NAMES": ["Call", "Conversation", "Volunteer"]
 }

@@ -1,14 +1,15 @@
 import pymongo
 import json
+import os
 
 def get_connection():
     from server import app
-    return Database(app.config["DB_ADDRESS"])
+    return Database(app.config["MONGO_URL"])
 
-def reset_collection(config_file):
+def reset_collection(config_file, mongo_url):
     with open(config_file, 'r') as f:
         config = json.load(f)
-    db = Database(config['DB_ADDRESS'])
+    db = Database(mongo_url)
     db.delete_all()
     for name in config['TALLY_NAMES']:
         db.reset(name)
