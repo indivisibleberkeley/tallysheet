@@ -3,4 +3,3 @@ repl-temp-*
 node_modules
 package-lock.json
 __*__
-server/templates/index.html
