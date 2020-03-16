@@ -6573,7 +6573,6 @@ var $author$project$Main$Data = F2(
 	function (a, b) {
 		return {$: 'Data', a: a, b: b};
 	});
-var $author$project$Main$Local = {$: 'Local'};
 var $author$project$Main$UpdateCount = F2(
 	function (a, b) {
 		return {$: 'UpdateCount', a: a, b: b};
@@ -6599,51 +6598,37 @@ var $elm$core$Maybe$map = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $author$project$Main$increment = F3(
-	function (scope, name, model) {
+var $author$project$Main$increment = F2(
+	function (name, model) {
 		if (model.$ === 'Loading') {
 			return $author$project$Main$Loading;
 		} else {
 			var group = model.a;
 			var local = model.b;
-			if (scope.$ === 'Group') {
-				return A2(
-					$author$project$Main$Data,
-					A3(
-						$elm$core$Dict$update,
-						name,
-						$elm$core$Maybe$map(
-							$elm$core$Basics$add(1)),
-						group),
-					local);
-			} else {
-				return A2(
-					$author$project$Main$Data,
-					group,
-					A3(
-						$elm$core$Dict$update,
-						name,
-						$elm$core$Maybe$map(
-							$elm$core$Basics$add(1)),
-						local));
-			}
+			return A2(
+				$author$project$Main$Data,
+				group,
+				A3(
+					$elm$core$Dict$update,
+					name,
+					$elm$core$Maybe$map(
+						$elm$core$Basics$add(1)),
+					local));
 		}
 	});
-var $elm$core$Debug$log = _Debug_log;
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$http$Http$post = function (r) {
 	return $elm$http$Http$request(
 		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'Increment':
 				var name = msg.a;
 				return _Utils_Tuple2(
-					A3($author$project$Main$increment, $author$project$Main$Local, name, model),
+					A2($author$project$Main$increment, name, model),
 					$elm$http$Http$post(
 						{
 							body: $elm$http$Http$emptyBody,
@@ -6707,13 +6692,7 @@ var $author$project$Main$update = F2(
 								local),
 							$elm$core$Platform$Cmd$none);
 					} else {
-						var err = countResult.a;
-						return _Utils_Tuple2(
-							A2(
-								$elm$core$Debug$log,
-								$elm$core$Debug$toString(err),
-								model),
-							$elm$core$Platform$Cmd$none);
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					}
 				}
 			default:
@@ -6727,13 +6706,7 @@ var $author$project$Main$update = F2(
 							$author$project$Main$emptyLike(tallies)),
 						$elm$core$Platform$Cmd$none);
 				} else {
-					var err = result.a;
-					return _Utils_Tuple2(
-						A2(
-							$elm$core$Debug$log,
-							$elm$core$Debug$toString(err),
-							model),
-						$elm$core$Platform$Cmd$none);
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 		}
 	});
@@ -12667,7 +12640,6 @@ var $mdgriffith$elm_ui$Element$row = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $author$project$Main$padding = 20;
 var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
 	function (a, b, c) {
 		return {$: 'SpacingStyle', a: a, b: b, c: c};
@@ -12688,6 +12660,7 @@ var $mdgriffith$elm_ui$Element$spacing = function (x) {
 			x));
 };
 var $author$project$Main$spacing = 20;
+var $author$project$Main$padding = 20;
 var $author$project$Main$columnStyle = _List_fromArray(
 	[
 		$mdgriffith$elm_ui$Element$padding($author$project$Main$padding),
@@ -12709,22 +12682,25 @@ var $author$project$Main$viewGroupTallies = function (tallies) {
 				A2(
 					$elm$core$List$map,
 					function (_v0) {
+						var name = _v0.a;
 						var count = _v0.b;
-						return $mdgriffith$elm_ui$Element$text(
-							$elm$core$String$fromInt(count));
-					},
-					$elm$core$Dict$toList(tallies))),
-				$author$project$Main$tallyColumn(
-				A2(
-					$elm$core$List$map,
-					function (_v1) {
-						var name = _v1.a;
-						return $author$project$Main$mainButton(
-							{
-								label: $mdgriffith$elm_ui$Element$text('reset ' + name),
-								onPress: $elm$core$Maybe$Just(
-									$author$project$Main$SendReset(name))
-							});
+						return A2(
+							$mdgriffith$elm_ui$Element$row,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$spacing($author$project$Main$spacing)
+								]),
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$text(
+									$elm$core$String$fromInt(count)),
+									$author$project$Main$mainButton(
+									{
+										label: $mdgriffith$elm_ui$Element$text('reset ' + name),
+										onPress: $elm$core$Maybe$Just(
+											$author$project$Main$SendReset(name))
+									})
+								]));
 					},
 					$elm$core$Dict$toList(tallies)))
 			]));
@@ -12747,22 +12723,25 @@ var $author$project$Main$viewLocalTallies = function (tallies) {
 				A2(
 					$elm$core$List$map,
 					function (_v0) {
+						var name = _v0.a;
 						var count = _v0.b;
-						return $mdgriffith$elm_ui$Element$text(
-							$elm$core$String$fromInt(count));
-					},
-					$elm$core$Dict$toList(tallies))),
-				$author$project$Main$tallyColumn(
-				A2(
-					$elm$core$List$map,
-					function (_v1) {
-						var name = _v1.a;
-						return $author$project$Main$mainButton(
-							{
-								label: $mdgriffith$elm_ui$Element$text('+1 ' + name),
-								onPress: $elm$core$Maybe$Just(
-									$author$project$Main$Increment(name))
-							});
+						return A2(
+							$mdgriffith$elm_ui$Element$row,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$spacing($author$project$Main$spacing)
+								]),
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$text(
+									$elm$core$String$fromInt(count)),
+									$author$project$Main$mainButton(
+									{
+										label: $mdgriffith$elm_ui$Element$text('+1 ' + name),
+										onPress: $elm$core$Maybe$Just(
+											$author$project$Main$Increment(name))
+									})
+								]));
 					},
 					$elm$core$Dict$toList(tallies)))
 			]));
