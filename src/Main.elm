@@ -33,27 +33,18 @@ main =
 -- MODEL
 
 
-increment : TallyScope -> String -> Model -> Model
-increment scope name model =
+increment : String -> Model -> Model
+increment name model =
     case model of
         Loading ->
             Loading
 
         Data group local ->
-            case scope of
-                Group ->
-                    Data
-                        (Dict.update name
-                            (Maybe.map ((+) 1))
-                            group
-                        )
-                        local
+            Data group <|
+                Dict.update name
+                    (Maybe.map ((+) 1))
+                    local
 
-                Local ->
-                    Data group <|
-                        Dict.update name
-                            (Maybe.map ((+) 1))
-                            local
 
 
 type alias Tallies =
@@ -68,12 +59,6 @@ emptyLike tallies =
 type Model
     = Loading
     | Data Tallies Tallies -- Data group local
-
-
-type TallyScope
-    = Group
-    | Local
-
 
 init : Json.Decode.Value -> ( Model, Cmd Msg )
 init _ =
@@ -110,7 +95,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Increment name ->
-            ( increment Local name model
+            ( increment name model
             , Http.post
                 { url =
                     Url.Builder.relative
@@ -167,18 +152,16 @@ update msg model =
                             , Cmd.none
                             )
 
-                        Err err ->
-                            ( Debug.log (Debug.toString err) model, Cmd.none )
+                        Err _ ->
+                            ( model, Cmd.none )
 
         UpdateAll result ->
             case result of
                 Ok tallies ->
                     ( Data tallies (emptyLike tallies), Cmd.none )
 
-                Err err ->
-                    ( Debug.log (Debug.toString err) model
-                    , Cmd.none
-                    )
+                Err _ ->
+                    ( model, Cmd.none )
 
 
 
