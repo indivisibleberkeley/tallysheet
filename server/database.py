@@ -7,8 +7,6 @@ def get_connection():
     return Database(app.config["MONGO_URL"])
 
 def reset_collection(tally_names, mongo_url):
-    with open(config_file, 'r') as f:
-        config = json.load(f)
     db = Database(mongo_url)
     db.delete_all()
     for name in tally_names:
