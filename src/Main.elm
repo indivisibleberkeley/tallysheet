@@ -266,18 +266,15 @@ viewLocalTallies tallies =
         [ tallyColumn [ text "Your tally" ]
         , tallyColumn <|
             List.map
-                (\( _, count ) ->
-                    text (String.fromInt count)
-                )
-                (Dict.toList tallies)
-        , tallyColumn <|
-            List.map
-                (\( name, _ ) ->
-                    mainButton
-                        { onPress = Just <| Increment name
-                        , label =
-                            text ("+1 " ++ name)
-                        }
+                (\( name, count ) ->
+                    Element.row [ Element.spacing spacing ]
+                        [ text (String.fromInt count)
+                        , mainButton
+                            { onPress = Just <| Increment name
+                            , label =
+                                text ("+1 " ++ name)
+                            }
+                        ]
                 )
                 (Dict.toList tallies)
         ]
@@ -289,18 +286,15 @@ viewGroupTallies tallies =
         [ tallyColumn [ text "Group tally" ]
         , tallyColumn <|
             List.map
-                (\( _, count ) ->
-                    text (String.fromInt count)
-                )
-                (Dict.toList tallies)
-        , tallyColumn <|
-            List.map
-                (\( name, _ ) ->
-                    mainButton
-                        { onPress = Just <| SendReset name
-                        , label =
-                            text ("reset " ++ name)
-                        }
+                (\( name, count ) ->
+                    Element.row [ Element.spacing spacing ]
+                        [ text (String.fromInt count)
+                        , mainButton
+                            { onPress = Just <| SendReset name
+                            , label =
+                                text ("reset " ++ name)
+                            }
+                        ]
                 )
                 (Dict.toList tallies)
         ]
